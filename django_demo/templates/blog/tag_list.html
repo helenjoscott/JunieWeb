@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Blog Tags{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h1 class="mb-4">Blog Tags</h1>
+
+        {% if tags %}
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                {% for tag in tags %}
+                    <div class="col">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <a href="{% url 'blog:tag_detail' tag.slug %}"
+                                       class="text-decoration-none">
+                                        {{ tag.name }}
+                                    </a>
+                                    <span class="badge bg-secondary float-end">
+                                        {{ tag.posts.count }} post{{ tag.posts.count|pluralize }}
+                                    </span>
+                                </h5>
+                                {% if tag.description %}
+                                    <p class="card-text">{{ tag.description|truncatewords:30 }}</p>
+                                {% else %}
+                                    <p class="card-text text-muted">No description available.</p>
+                                {% endif %}
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-muted">
+                                    Created {{ tag.created_at|date:"F j, Y" }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {% if is_paginated %}
+                <nav class="mt-4" aria-label="Tag navigation">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1">&laquo; First</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                                    Previous
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        <li class="page-item active">
+                            <span class="page-link">
+                                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                            </span>
+                        </li>
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                                    Next
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+                                    Last &raquo;
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        {% else %}
+            <div class="alert alert-info">
+                No tags have been created yet.
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">About Tags</h5>
+                <p class="card-text">
+                    Tags help organize blog posts by topics. Each post can have multiple tags,
+                    making it easier to find related content.
+                </p>
+                {% if user.is_staff %}
+                    <a href="{% url 'admin:blog_tag_add' %}" class="btn btn-primary">
+                        Create New Tag
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if popular_tags %}
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">Popular Tags</h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for tag in popular_tags %}
+                            <a href="{% url 'blog:tag_detail' tag.slug %}"
+                               class="badge bg-secondary text-decoration-none">
+                                {{ tag.name }} ({{ tag.posts.count }})
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

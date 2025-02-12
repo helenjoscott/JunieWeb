@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Delete Post{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title text-danger mb-4">Delete Post</h1>
+                
+                <div class="alert alert-warning">
+                    <h4 class="alert-heading">Warning!</h4>
+                    <p>You are about to delete the post "<strong>{{ post.title }}</strong>".</p>
+                    <p class="mb-0">This action cannot be undone. All comments associated with this post will also be deleted.</p>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Post Details</h5>
+                        <ul class="list-unstyled">
+                            <li><strong>Author:</strong> {{ post.author.get_full_name|default:post.author.username }}</li>
+                            <li><strong>Created:</strong> {{ post.created_at|date:"F j, Y" }}</li>
+                            <li><strong>Status:</strong> {{ post.get_status_display }}</li>
+                            <li><strong>Comments:</strong> {{ post.comments.count }}</li>
+                            {% if post.tags.exists %}
+                                <li>
+                                    <strong>Tags:</strong>
+                                    {% for tag in post.tags.all %}
+                                        <span class="badge bg-secondary">{{ tag.name }}</span>
+                                    {% endfor %}
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-danger">
+                            Confirm Delete
+                        </button>
+                        <a href="{{ post.get_absolute_url }}" class="btn btn-secondary">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

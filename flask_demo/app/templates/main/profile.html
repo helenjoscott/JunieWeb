@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <!-- Profile Card -->
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                {% if user.avatar %}
+                    <img src="{{ user.avatar }}" alt="Profile Picture"
+                         class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                {% else %}
+                    <img src="{{ url_for('static', filename='images/default-avatar.png') }}" 
+                         alt="Default Profile Picture"
+                         class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                {% endif %}
+                
+                <h3 class="card-title mb-3">{{ user.username }}</h3>
+                <p class="text-muted">Member since {{ user.created_at|datetime }}</p>
+                
+                {% if user == current_user %}
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#avatarModal">
+                        <i class="fas fa-camera"></i> Change Avatar
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Contact Information</h5>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <i class="fas fa-envelope text-primary"></i>
+                        {{ user.email }}
+                    </li>
+                    {% if user.location %}
+                        <li class="mb-2">
+                            <i class="fas fa-map-marker-alt text-primary"></i>
+                            {{ user.location }}
+                        </li>
+                    {% endif %}
+                    {% if user.website %}
+                        <li class="mb-2">
+                            <i class="fas fa-globe text-primary"></i>
+                            <a href="{{ user.website }}" target="_blank">{{ user.website }}</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Social Links -->
+        {% if user.twitter or user.github or user.linkedin %}
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Social Links</h5>
+                    <div class="d-flex justify-content-around">
+                        {% if user.twitter %}
+                            <a href="https://twitter.com/{{ user.twitter }}" class="text-decoration-none" target="_blank">
+                                <i class="fab fa-twitter fa-2x text-primary"></i>
+                            </a>
+                        {% endif %}
+                        {% if user.github %}
+                            <a href="https://github.com/{{ user.github }}" class="text-decoration-none" target="_blank">
+                                <i class="fab fa-github fa-2x text-dark"></i>
+                            </a>
+                        {% endif %}
+                        {% if user.linkedin %}
+                            <a href="https://linkedin.com/in/{{ user.linkedin }}" class="text-decoration-none" target="_blank">
+                                <i class="fab fa-linkedin fa-2x text-primary"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-8">
+        <!-- Profile Information -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="card-title mb-0">Profile Information</h4>
+                    {% if user == current_user %}
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </button>
+                    {% endif %}
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-3">
+                        <p class="mb-0">Username</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{ user.username }}</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <p class="mb-0">Email</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{ user.email }}</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <p class="mb-0">Location</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">{{ user.location or 'Not specified' }}</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <p class="mb-0">Website</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <p class="text-muted mb-0">
+                            {% if user.website %}
+                                <a href="{{ user.website }}" target="_blank">{{ user.website }}</a>
+                            {% else %}
+                                Not specified
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User's Recent Items -->
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Recent Items</h4>
+                
+                {% if user.items.count() > 0 %}
+                    {% for item in user.items.order_by(Item.created_at.desc()).limit(5).all() %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="card-title mb-1">{{ item.name }}</h5>
+                                        <p class="text-muted small mb-0">
+                                            Posted on {{ item.created_at|datetime }}
+                                        </p>
+                                    </div>
+                                    <span class="badge bg-primary">${{ "%.2f"|format(item.price) }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    
+                    {% if user.items.count() > 5 %}
+                        <div class="text-center">
+                            <a href="{{ url_for('main.user_items', username=user.username) }}" class="btn btn-primary">
+                                View All Items
+                            </a>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="alert alert-info mb-0">
+                        No items posted yet.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if user == current_user %}
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="post" action="{{ url_for('main.update_profile') }}">
+                    <div class="modal-body">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            {{ form.location.label(class="form-label") }}
+                            {{ form.location(class="form-control") }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.website.label(class="form-label") }}
+                            {{ form.website(class="form-control") }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.twitter.label(class="form-label") }}
+                            {{ form.twitter(class="form-control") }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.github.label(class="form-label") }}
+                            {{ form.github(class="form-control") }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.linkedin.label(class="form-label") }}
+                            {{ form.linkedin(class="form-control") }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Avatar Modal -->
+    <div class="modal fade" id="avatarModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change Avatar</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="post" action="{{ url_for('main.update_avatar') }}" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="avatar" class="form-label">Choose Image</label>
+                            <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

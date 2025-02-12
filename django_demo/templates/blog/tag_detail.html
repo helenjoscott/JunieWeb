@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Posts tagged with "{{ tag.name }}"{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                Posts tagged with "{{ tag.name }}"
+                <span class="badge bg-secondary">{{ posts|length }} post{{ posts|length|pluralize }}</span>
+            </h1>
+        </div>
+
+        {% if tag.description %}
+            <div class="alert alert-info mb-4">
+                {{ tag.description }}
+            </div>
+        {% endif %}
+
+        {% if posts %}
+            {% for post in posts %}
+                <article class="card mb-4">
+                    <div class="card-body">
+                        <h2 class="card-title">
+                            <a href="{{ post.get_absolute_url }}" class="text-decoration-none">
+                                {{ post.title }}
+                            </a>
+                        </h2>
+                        
+                        <div class="text-muted mb-2">
+                            <small>
+                                By <a href="{% url 'users:user_detail' post.author.username %}">
+                                    {{ post.author.get_full_name|default:post.author.username }}
+                                </a>
+                                on {{ post.created_at|date:"F j, Y" }}
+                            </small>
+                        </div>
+                        
+                        {% if post.tags.exists %}
+                            <div class="mb-2">
+                                {% for post_tag in post.tags.all %}
+                                    <a href="{% url 'blog:tag_detail' post_tag.slug %}"
+                                       class="badge bg-secondary text-decoration-none {% if post_tag == tag %}bg-primary{% endif %}">
+                                        {{ post_tag.name }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <p class="card-text">{{ post.content|truncatewords:50 }}</p>
+                        
+                        <a href="{{ post.get_absolute_url }}" class="btn btn-primary">
+                            Read More
+                        </a>
+                    </div>
+                </article>
+            {% endfor %}
+
+            {% if is_paginated %}
+                <nav aria-label="Post navigation">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1">&laquo; First</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                                    Previous
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        <li class="page-item active">
+                            <span class="page-link">
+                                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                            </span>
+                        </li>
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                                    Next
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+                                    Last &raquo;
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        {% else %}
+            <div class="alert alert-info">
+                No posts found with this tag.
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">About this Tag</h5>
+                <p class="card-text">
+                    {% if tag.description %}
+                        {{ tag.description }}
+                    {% else %}
+                        No description available for this tag.
+                    {% endif %}
+                </p>
+                <p class="text-muted mb-0">
+                    <small>Created on {{ tag.created_at|date:"F j, Y" }}</small>
+                </p>
+            </div>
+        </div>
+
+        {% if related_tags %}
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Related Tags</h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for related_tag in related_tags %}
+                            <a href="{% url 'blog:tag_detail' related_tag.slug %}"
+                               class="badge bg-secondary text-decoration-none">
+                                {{ related_tag.name }} ({{ related_tag.posts.count }})
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

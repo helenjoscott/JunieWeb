@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}About{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h1 class="card-title">About Flask Demo</h1>
+                <p class="lead">
+                    This demo application showcases Flask's powerful features and demonstrates how PyCharm enhances
+                    Python web development.
+                </p>
+                <hr>
+                <h4>Key Features Demonstrated</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <h5><i class="fas fa-route text-primary"></i> Routing and Blueprint Organization</h5>
+                            <ul>
+                                <li>Modular application structure</li>
+                                <li>Blueprint registration</li>
+                                <li>URL routing patterns</li>
+                                <li>Request handling</li>
+                            </ul>
+                        </div>
+                        <div class="mb-4">
+                            <h5><i class="fas fa-database text-primary"></i> Database Integration</h5>
+                            <ul>
+                                <li>SQLAlchemy ORM</li>
+                                <li>Database migrations</li>
+                                <li>Model relationships</li>
+                                <li>Query optimization</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <h5><i class="fas fa-lock text-primary"></i> Authentication</h5>
+                            <ul>
+                                <li>User authentication</li>
+                                <li>Session management</li>
+                                <li>Password hashing</li>
+                                <li>Access control</li>
+                            </ul>
+                        </div>
+                        <div class="mb-4">
+                            <h5><i class="fas fa-exclamation-triangle text-primary"></i> Error Handling</h5>
+                            <ul>
+                                <li>Custom error pages</li>
+                                <li>Exception handling</li>
+                                <li>Logging system</li>
+                                <li>Debugging tools</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Technical Stack</h4>
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5>Backend</h5>
+                        <ul class="list-unstyled">
+                            <li><i class="fab fa-python text-primary"></i> Python 3.8+</li>
+                            <li><i class="fas fa-flask text-primary"></i> Flask 3.0</li>
+                            <li><i class="fas fa-database text-primary"></i> SQLAlchemy</li>
+                            <li><i class="fas fa-key text-primary"></i> Flask-Login</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h5>Frontend</h5>
+                        <ul class="list-unstyled">
+                            <li><i class="fab fa-bootstrap text-primary"></i> Bootstrap 5</li>
+                            <li><i class="fab fa-js text-primary"></i> JavaScript</li>
+                            <li><i class="fab fa-html5 text-primary"></i> HTML5</li>
+                            <li><i class="fab fa-css3 text-primary"></i> CSS3</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h5>Tools</h5>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-code text-primary"></i> PyCharm</li>
+                            <li><i class="fas fa-bug text-primary"></i> Flask Debug Toolbar</li>
+                            <li><i class="fas fa-vial text-primary"></i> pytest</li>
+                            <li><i class="fas fa-book text-primary"></i> Sphinx</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h4 class="card-title">PyCharm Advantages</h4>
+                <div class="mb-3">
+                    <h5><i class="fas fa-tools text-primary"></i> Development Tools</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success"></i> Intelligent code completion</li>
+                        <li><i class="fas fa-check text-success"></i> Advanced debugging</li>
+                        <li><i class="fas fa-check text-success"></i> Database tools</li>
+                        <li><i class="fas fa-check text-success"></i> VCS integration</li>
+                    </ul>
+                </div>
+                <div class="mb-3">
+                    <h5><i class="fas fa-flask text-primary"></i> Flask Integration</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success"></i> Template language support</li>
+                        <li><i class="fas fa-check text-success"></i> Run configurations</li>
+                        <li><i class="fas fa-check text-success"></i> Framework-specific inspections</li>
+                        <li><i class="fas fa-check text-success"></i> Quick documentation</li>
+                    </ul>
+                </div>
+                <div>
+                    <h5><i class="fas fa-vial text-primary"></i> Testing Support</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li><i class="fas fa-check text-success"></i> Test runner</li>
+                        <li><i class="fas fa-check text-success"></i> Coverage analysis</li>
+                        <li><i class="fas fa-check text-success"></i> Test debugging</li>
+                        <li><i class="fas fa-check text-success"></i> Parameterized tests</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Getting Started</h4>
+                <p>Want to explore the code or contribute?</p>
+                <div class="d-grid gap-2">
+                    <a href="https://github.com/yourusername/flask-demo" class="btn btn-primary">
+                        <i class="fab fa-github"></i> View on GitHub
+                    </a>
+                    <a href="{{ url_for('main.docs') }}" class="btn btn-secondary">
+                        <i class="fas fa-book"></i> Documentation
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
